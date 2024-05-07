@@ -1,0 +1,4 @@
+.env
+response.log
+api.log
+*.csv

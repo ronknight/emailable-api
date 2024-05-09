@@ -1,13 +1,12 @@
-import os
 import csv
 import logging
 import sys
 from dotenv import load_dotenv
 import requests
-import glob
+import os
 
 # Configure logging
-logging.basicConfig(filename='api.log', level=logging.INFO)
+logging.basicConfig(filename='email_verification.log', level=logging.INFO)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,28 +14,27 @@ load_dotenv()
 # Retrieve API key from environment variable
 api_key = os.getenv('API_KEY')
 
-# Define the base URL
-base_url = "https://api.emailable.com/v1/batch"
-
 # Function to read email addresses from 'Email' column in CSV file
 def read_emails_from_csv(csv_file):
     emails = []
     with open(csv_file, newline='') as csvfile:
         reader = csv.reader(csvfile)
-        next(reader)  # Skip the first line (header)
+        next(reader)  # Skip the first line (labels)
         for row in reader:
-            email = row[11]  # Assuming 'Email' is in the 12th column (index 11)
-            if email:
-                emails.append(email)
+            email = row[0]  # Email is the first column
+            name = row[1] if len(row) > 1 else None  # Name is the second column (if available)
+            emails.append({"email": email, "name": name})
     return emails
 
 def create_batch(emails):
+    # Define the base URL
+    base_url = "https://api.emailable.com/v1/batch"
+
     # Construct the URL
     url = f"{base_url}?api_key={api_key}"
 
-    # Set the payload
     payload = {
-        "emails": emails
+        "emails": [email["email"] for email in emails]
     }
 
     # Set the headers
@@ -51,22 +49,29 @@ def create_batch(emails):
         # Log the response status code and text
         logging.info(f"Response status code: {response.status_code}")
         logging.info(f"Response text: {response.text}")
+
+        # Parse response JSON
+        response_json = response.json()
+
+        # Extract and print batch ID
+        if "id" in response_json:
+            batch_id = response_json["id"]
+            print(f"Batch email verification request completed: Please run the following command to check status.\npython check_status.py {batch_id}")
+
     except Exception as e:
         # Log any exceptions that occur
         logging.error(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
-    # Auto-detect CSV file in the current directory
-    csv_files = glob.glob("*.csv")
-
-    if not csv_files:
-        print("Error: No CSV files found in the current directory.")
+    # Check if CSV file name is provided as a command-line argument
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <csv_file>")
         sys.exit(1)
 
-    # Choose the first CSV file found
-    csv_file = csv_files[0]
+    # Get CSV file name from command-line argument
+    csv_file = sys.argv[1]
 
-    # Read email addresses from 'Email' column in CSV file
+    # Read email addresses from CSV file
     emails = read_emails_from_csv(csv_file)
 
     # Create batch with the email addresses

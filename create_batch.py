@@ -16,6 +16,15 @@ api_key = os.getenv('API_KEY')
 
 # Function to read email addresses from 'Email' column in CSV file
 def read_emails_from_csv(csv_file):
+    """
+    This function reads a CSV file and extracts email addresses and names from it.
+
+    Args:
+        csv_file (str): The path to the CSV file.
+
+    Returns:
+        list: A list of dictionaries, where each dictionary contains an email address and a name.
+    """
     emails = []
     with open(csv_file, newline='') as csvfile:
         reader = csv.reader(csvfile)
@@ -27,6 +36,12 @@ def read_emails_from_csv(csv_file):
     return emails
 
 def create_batch(emails):
+    """
+    This function creates a batch of email addresses for verification using the Emailable API.
+
+    Args:
+        emails (list): A list of dictionaries, where each dictionary contains an email address and a name.
+    """
     # Define the base URL
     base_url = "https://api.emailable.com/v1/batch"
 

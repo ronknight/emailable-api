@@ -16,6 +16,14 @@ api_key = os.getenv('API_KEY')
 base_url = "https://api.emailable.com/v1/batch"
 
 def get_batch(batch_id):
+    """
+    This function retrieves the results of a batch email verification request from the Emailable API.
+
+    Args:
+        batch_id (str): The ID of the batch.
+
+    The function logs the response from the API and writes the results to a CSV file.
+    """
     # Construct the URL with the id parameter
     url = f"{base_url}?id={batch_id}"
 
@@ -46,7 +54,7 @@ def get_batch(batch_id):
                         'reason': email_info.get('reason', ''),
                         'state': email_info.get('state', '')
                     })
-                    
+
             print("Output written to output.csv")
 
         else:
@@ -57,6 +65,10 @@ def get_batch(batch_id):
         print(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
+    """
+    This script retrieves the results of a batch email verification request from the Emailable API.
+    It logs the response from the API and writes the results to a CSV file.
+    """
     # Check if the batch_id argument is provided
     if len(sys.argv) != 2:
         print("Usage: python script.py <batch_id>")

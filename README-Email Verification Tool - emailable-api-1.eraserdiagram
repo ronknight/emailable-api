@@ -1,0 +1,39 @@
+flowchart-diagram
+
+title Email Verification Tool - emailable-api
+
+Setup [shape: oval, icon: settings] > Clone repository [icon: git-branch]
+Clone repository > Create .env file [icon: file-text]
+Create .env file > Add API_KEY to .env [icon: key]
+Add API_KEY to .env > Install dependencies [icon: package]
+Install dependencies > Ready to use scripts [shape: oval, icon: check-square]
+
+Create Batch [shape: oval, icon: file-plus] > Read CSV file [icon: file-text]
+Read CSV file > Extract email addresses [icon: mail]
+Extract email addresses > Send POST request to Emailable API [icon: send]
+Send POST request to Emailable API > Receive batch ID [icon: inbox]
+Receive batch ID > Print batch ID and instructions [icon: printer]
+Print batch ID and instructions > End Create Batch [shape: oval, icon: check-square]
+
+Check Status [shape: oval, icon: file-search] > Check if batch ID provided [shape: diamond, icon: key]
+Check if batch ID provided > Send GET request to Emailable API [icon: send]: Yes
+Check if batch ID provided > Print error message [shape: oval, icon: x-square]: No
+Send GET request to Emailable API > Receive status message [icon: inbox]
+Receive status message > Batch still processing? [shape: diamond, icon: clock]
+Batch still processing? > Wait 30 seconds [shape: oval, icon: clock]: Yes
+Batch still processing? > Prompt to download results [shape: oval, icon: download]: No
+Wait 30 seconds > Send GET request to Emailable API [icon: send]
+Prompt to download results > End Check Status [shape: oval, icon: check-square]
+
+Get Result [shape: oval, icon: file-download] > Check if batch ID provided [shape: diamond, icon: key]
+Check if batch ID provided > Send GET request to Emailable API [icon: send]: Yes
+Check if batch ID provided > Print error message [shape: oval, icon: x-square]: No
+Send GET request to Emailable API > Receive batch data [icon: inbox]
+Receive batch data > Write results to output.csv [icon: file-text]
+Write results to output.csv > Log API response to response.log [icon: file-text]
+Log API response to response.log > End Get Result [shape: oval, icon: check-square]
+
+Ready to use scripts > Create Batch
+Ready to use scripts > Check Status
+Ready to use scripts > Get Result
+
